@@ -1,3 +1,3 @@
-local str={""}
+local str={"page not foud"}
 
 return str

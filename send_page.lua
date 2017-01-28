@@ -5,15 +5,8 @@ function send_page(socket, page)
     local response=""
 
     if a_size==1 then
-        response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length:"
-        if page:find("css")~=nil then
-            response=response:gsub("html","css")
-        end
-        local res_string = content[1]:gsub("\n","")
-        response=response..tostring(string.len(res_string)).."\r\n\r\n"..res_string
-        socket:send(response, function(socket)
-            socket:close()
-        end)
+        local send_response=require("send_response")
+        send_response(socket,content[1],page)
     else
         local send_end = function(socket)
             response="0\r\n\r\n"
@@ -42,6 +35,7 @@ function send_page(socket, page)
         end
         socket:send(response,send_body)
     end
+    collectgarbage()
 end
 
 return send_page

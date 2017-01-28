@@ -1,20 +1,21 @@
-wifi.setmode(3)
-cfg={}
-cfg.ssid="WPMD"
-cfg.pwd="pass0000"
-cfg.auth=wifi.WPA2_PSK
-cfg.hidden=1
-wifi.ap.config(cfg)
-wifi.sta.config("Xperia E3_","1234qwer")
-wifi.sta.connect()
+config={}
+local IDLE_AT_STARTUP_MS = 1000;
 
-stacfg={}
-stacfg.ip = "192.168.43.2"
-stacfg.netmask = "255.255.255.0"
-stacfg.gateway = "192.168.43.1"
-wifi.sta.setip(stacfg)
-wifi.sta.sethostname("NodeMCU")
-uart.setup(0, 115200, 8, 0, 1, 0 )
-
---i2c.setup(0,3,4,i2c.SLOW)
-dofile("server.lua")
+tmr.alarm(1,IDLE_AT_STARTUP_MS,0,function()
+    uart.setup(0,115200,8,0,1,0)
+    uart.on("data",0,function(data)
+        uart.on("data")
+        end,0)
+    uart.write(0,"config#")
+    uart.on("data", "#",
+        function(data)
+            for k, v in string.gmatch(data, "(%w+)=([%w._ ]+)|*") do
+                config[k] = v
+                --print(k," ",v,"\n")
+            end
+            uart.on("data") 
+            collectgarbage()
+            dofile("start.lua")
+        end,
+        0)
+    end)   
