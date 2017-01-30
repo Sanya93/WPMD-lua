@@ -45,7 +45,7 @@ function recieve_data(client, req)
     collectgarbage()
   end
 
-srv = net.createServer(net.TCP,30)
+srv = net.createServer(net.TCP,1)
 srv:listen(80, function(conn)
   conn:on("receive", recieve_data )
   collectgarbage()
